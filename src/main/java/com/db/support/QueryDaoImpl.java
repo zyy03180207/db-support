@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SuppressWarnings({"unchecked", "rawtypes" })
 public class QueryDaoImpl implements QueryDao {
 	@Autowired(required=false)
-	@Qualifier("querySessionFactory")  
+	@Qualifier("sessionFactory")  
 	private SessionFactory querySessionFactory;
 	/**
 	 * @description 返回当前SESSION
@@ -214,6 +214,18 @@ public class QueryDaoImpl implements QueryDao {
 		return list.get(0);
 	}
 
+	protected <T> Page<T> findPageBySql(int pageNumber, int pageSize, String sql, Object[] params, Class<T> z) throws DbException {
+		String newSql = null;
+		if(pageNumber > 0) {
+			newSql = sql + " LIMIT " + pageNumber + "," + pageNumber * pageSize;
+		} else {
+			throw new DbException("[DAO层]QueryDao.findPageBySql方法pageNumber参数必须大于0");
+		}
+		List<Object> list = findBySql(newSql, params);
+		
+		return null;
+	}
+	
 
 	public SessionFactory getQuerySessionFactory() {
 		return querySessionFactory;
